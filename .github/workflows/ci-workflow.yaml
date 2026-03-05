@@ -1,0 +1,54 @@
+name: Secure CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-scan-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dependencies
+        run: uv sync --all-groups
+
+      - name: Run tests
+        run: uv run python -m pytest
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Run dependency scan
+        run: pip-audit --strict
+    
+    container-build-and-scan:
+      runs-on: ubuntu-latest
+      needs: test-and-scan-dependencies
+
+      steps:
+        - name: Check out code
+          uses: actions/checkout@v4
+
+        - name: Build Docker image
+          run: docker build -t secure-file-upload:latest .
+        
+        - name: Run Trivy vulnerability scan
+          uses: aquasecurity/trivy-action@0.20.0
+          with:
+            image-ref: secure-file-upload:latest
+            severity: HIGH,CRITICAL
+            exit-code: 1
+            ignore-unfixed: true
