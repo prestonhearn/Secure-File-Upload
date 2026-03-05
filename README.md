@@ -13,13 +13,19 @@ Secure File Upload is a FastAPI-based service to allow ease of file transfer fro
 * FastAPI
 * uv
 * Git
+* Docker
+* Pytest
+* GitHub Actions
+* Trivy
 
 ## Getting Started
 ### Prerequisites
 * uv installed
 ### Setup
 `uv sync`
-### Run Server
-`uvicorn main:app --host 0.0.0.0 --port 80 --reload`
+### Run Server Outside of Container
+`uv run uvicorn main:app --host 0.0.0.0 --port 80 --reload`
+
 
 ## Project Status
+Under development / Early stages
