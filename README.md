@@ -27,7 +27,7 @@ Secure File Upload is a FastAPI-based service to allow ease of file transfer fro
 `uv run uvicorn main:app --host 0.0.0.0 --port 80 --reload`
 
 ## Security
-![CI](https://github.com/YOURUSER/YOURREPO/actions/workflows/secure-ci.yml/badge.svg)
+[![Secure CI Pipeline](https://github.com/prestonhearn/Secure-File-Upload/actions/workflows/ci-workflow.yaml/badge.svg)](https://github.com/prestonhearn/Secure-File-Upload/actions/workflows/ci-workflow.yaml)
 ### CI Security Pipeline
 
 Every commit is automatically verified with:
