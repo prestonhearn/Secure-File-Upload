@@ -26,6 +26,8 @@ Secure File Upload is a FastAPI-based service to allow ease of file transfer fro
 ### Run Server Outside of Container
 `uv run uvicorn main:app --host 0.0.0.0 --port 80 --reload`
 
+## Security
+![CI](https://github.com/YOURUSER/YOURREPO/actions/workflows/ci.yml/badge.svg)
 
 ## Project Status
 Under development / Early stages

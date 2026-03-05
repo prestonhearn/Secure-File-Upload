@@ -33,7 +33,28 @@ jobs:
 
       - name: Run dependency scan
         run: pip-audit --strict
-    
+
+  sast-codeql:
+    name: Static Application Security Testing (CodeQL)
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
   container-build-and-scan:
     runs-on: ubuntu-latest
     needs: test-and-scan-dependencies
@@ -52,3 +73,27 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: 1
           ignore-unfixed: true
+
+  generate-sbom:
+    runs-on: ubuntu-latest
+    needs: container-build-and-scan
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t secure-file-upload:latest .
+      
+      - name: Generate SBOM
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: secure-file-upload:latest
+          format: cyclonedx
+          output: sbom.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
